@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +15,7 @@ public class CaricatoreImmagini {
 
   public BufferedImage caricaImmagine(String posizione){
     try{
-      image = ImageIO.read(getClass().getResource(posizione));
+      image = ImageIO.read(getClass().getResourceAsStream((posizione)));
             System.out.println("C'è l'immagine!");
 
       
