@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package gioco;
 
 import java.awt.Color;
@@ -34,7 +29,7 @@ public class GamePanel extends JPanel implements Runnable{
     
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 4;
+    int playerSpeed = 10;
     
     int fps = 60;
 
@@ -49,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void startGameThread(){
-        gameThread = new Thread();
+        gameThread = new Thread(this);
         gameThread.start();
     }
     
@@ -104,7 +99,7 @@ public class GamePanel extends JPanel implements Runnable{
             playerX -= playerSpeed;
         }
         if(keyH.rightPressed == true){
-            playerY += playerSpeed;
+            playerX += playerSpeed;
         }
         
         
