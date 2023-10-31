@@ -1,11 +1,10 @@
 package gioco;
 
+import Entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /*
@@ -17,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16; //16x16 tile
     final int scale = 3;
     
-    final int tileSize = originalTileSize * scale; // 48x48 tile
+    public final int tileSize = originalTileSize * scale; // 48x48 tile
     final int maxScreenCol = 16; // value = 32
     final int maxScreenRow = 12; // value = 24
     final int screenWidth = tileSize * maxScreenCol; // 1536px
@@ -26,10 +25,8 @@ public class GamePanel extends JPanel implements Runnable{
     
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    Player player = new Player(this, keyH);
     
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 10;
     
     int fps = 60;
 
@@ -48,15 +45,15 @@ public class GamePanel extends JPanel implements Runnable{
         gameThread.start();
     }
     
-    @Override
-    public void run() {
-        System.out.println("Fino a qua arrivo");
+   /* @Override
+    public void run() { // Create a loop with method Sleep
 
         double drawInterval = 1000000000/fps; //refresh rate 0.01666 s
         double nextDrawTime = System.nanoTime() + drawInterval;
         
         while(gameThread != null){
 
+            
             
             // 1 Update information such a character position 
             update();
@@ -84,25 +81,52 @@ public class GamePanel extends JPanel implements Runnable{
             
         }
         
+    }*/
+    
+    @Override
+    public void run(){ //Create a loop with Delta
+        
+        double drawInterval = 1000000000 / fps; //refresh rate 0.01666 s with 60fps
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        
+        long timer = 0; //Per mostrare gli FPS del app
+        int drawCount = 0;
+                
+        while (gameThread != null) {
+            
+            currentTime = System.nanoTime();
+            
+            delta += (currentTime - lastTime) / drawInterval; // Calcola il tempo che è passato dal ciclo precedente
+            timer += (currentTime - lastTime); 
+            lastTime = currentTime;
+            
+            
+            if(delta >= 1){     //se e' passato almeno un tempo di intervallo ->
+
+                // 1 Update information such a character position 
+                update();
+
+                // 2 Draw: draw the screen with the update information
+                repaint();
+            
+                delta--;
+                
+                drawCount++;
+            }
+            if(timer >= 1000000000){
+                System.out.println("FPS: "+ drawCount);
+                timer = 0;
+                drawCount = 0;
+            }
+        }
     }
     
     
     public void update(){
-
-        if(keyH.upPressed == true){
-            playerY -= playerSpeed;
-        }
-        if(keyH.downPressed == true){
-            playerY += playerSpeed;
-        }
-        if(keyH.leftPressed == true){
-            playerX -= playerSpeed;
-        }
-        if(keyH.rightPressed == true){
-            playerX += playerSpeed;
-        }
         
-        
+        player.update();
     }
     
     @Override
@@ -111,9 +135,7 @@ public class GamePanel extends JPanel implements Runnable{
         
         Graphics2D g2 = (Graphics2D)g;
         
-        g2.setColor(Color.white);
-        
-        g2.fillRect(playerX, playerY,tileSize, tileSize);
+       player.draw(g2);
 
         g2.dispose();
     }
