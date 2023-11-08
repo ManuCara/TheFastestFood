@@ -23,3 +23,6 @@
 hs_err_pid*
 replay_pid*
 /Gioco/nbproject/private/
+/Gioco/build/
+/ProvaThreadGioco/nbproject/private/
+/ProvaThreadGioco/build/
