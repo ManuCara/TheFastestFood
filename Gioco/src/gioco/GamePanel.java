@@ -1,6 +1,7 @@
 package gioco;
 
 import Entity.Player;
+import Tiles.TileManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,21 +18,19 @@ public class GamePanel extends JPanel implements Runnable{
     final int scale = 3;
     
     public final int tileSize = originalTileSize * scale; // 48x48 tile
-    final int maxScreenCol = 16; // value = 32
-    final int maxScreenRow = 12; // value = 24
-    final int screenWidth = tileSize * maxScreenCol; // 1536px
-    final int screenHeight = tileSize * maxScreenRow; // 1152px
+    public final int maxScreenCol = 16; // value = 32
+    public final int maxScreenRow = 12; // value = 24
+    public final int screenWidth = tileSize * maxScreenCol; // 1536px
+    public final int screenHeight = tileSize * maxScreenRow; // 1152px
     
+    int fps = 60;
     
+    TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     Player player = new Player(this, keyH);
     
-    
-    int fps = 60;
-
-
-    
+        
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.black);
@@ -52,17 +51,13 @@ public class GamePanel extends JPanel implements Runnable{
         double nextDrawTime = System.nanoTime() + drawInterval;
         
         while(gameThread != null){
-
-            
             
             // 1 Update information such a character position 
             update();
             
             // 2 Draw: draw the screen with the update information
             repaint();
-            
-            
-            
+                        
             try {
                 double remainingTime = nextDrawTime - System.nanoTime();
                 remainingTime = remainingTime/1000000;
@@ -135,7 +130,9 @@ public class GamePanel extends JPanel implements Runnable{
         
         Graphics2D g2 = (Graphics2D)g;
         
-       player.draw(g2);
+        tileM.draw(g2);
+        
+        player.draw(g2);
 
         g2.dispose();
     }
