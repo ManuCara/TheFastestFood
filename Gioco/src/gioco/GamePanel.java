@@ -22,13 +22,22 @@ public class GamePanel extends JPanel implements Runnable{
     public final int maxScreenRow = 12; // value = 24
     public final int screenWidth = tileSize * maxScreenCol; // 1536px
     public final int screenHeight = tileSize * maxScreenRow; // 1152px
+
+
+    //World SETTINGS
+    public final int maxWorldCol = 16;
+    public final int maxWorldRow = 16;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
+
     
     int fps = 60;
     
-    TileManager tileM = new TileManager(this);
+    TileManager tileM = new TileManager(this, "res/tiles/ristorante");
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    Player player = new Player(this, keyH);
+    public CollisionCecker cChecker = new CollisionCecker(this);
+    public Player player = new Player(this, keyH);
     
         
     public GamePanel() {
@@ -43,40 +52,6 @@ public class GamePanel extends JPanel implements Runnable{
         gameThread = new Thread(this);
         gameThread.start();
     }
-    
-   /* @Override
-    public void run() { // Create a loop with method Sleep
-
-        double drawInterval = 1000000000/fps; //refresh rate 0.01666 s
-        double nextDrawTime = System.nanoTime() + drawInterval;
-        
-        while(gameThread != null){
-            
-            // 1 Update information such a character position 
-            update();
-            
-            // 2 Draw: draw the screen with the update information
-            repaint();
-                        
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000;
-                
-                if(remainingTime < 0){
-                    remainingTime = 0;
-                }
-                
-                Thread.sleep((long)remainingTime);
-                
-                nextDrawTime += drawInterval;
-                
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-        
-    }*/
     
     @Override
     public void run(){ //Create a loop with Delta

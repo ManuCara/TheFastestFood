@@ -2,14 +2,13 @@ package Tiles;
 
 import gioco.GamePanel;
 import java.awt.Graphics2D;
-import java.util.List;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.DirectoryStream;
-import java.nio.file.*;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /*
@@ -18,17 +17,39 @@ import javax.imageio.ImageIO;
 public final class TileManager {
     
     GamePanel gp;
-    Tile[] tile;
-    int mapTileNum[][];
+    public Tile[] tile;
+    public int mapTileNum[][];
 
-    public TileManager(GamePanel gp) {
+    public TileManager(GamePanel gp, String folderPath) {
         this.gp = gp;
         
-        tile = new Tile[12];
-        mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
         
-        getTileImage();
+        getTileImage(folderPath);
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+        
         loadMap("/maps/risto.txt");
+    }
+    
+    public void getTileImage(String folderPath){
+        File path = new File(folderPath);
+        File[] allFiles = path.listFiles();
+        
+        tile = new Tile[allFiles.length];
+           
+        for(int i = 0; i < allFiles.length; i++){
+            try {
+                tile[i] = new Tile();
+                tile[i].image = ImageIO.read(allFiles[i]);
+                String s = allFiles[i] + "";
+                if(s.contains("collision") || s.contains("Collision")){
+                    tile[i].collision = true;
+                    //System.out.println("File numero: " + i + " Collisione attiva");
+                }                
+            } catch (IOException ex) {
+                Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }            
+        
     }
     
     public void loadMap(String filePath){
@@ -38,11 +59,11 @@ public final class TileManager {
                 int col = 0;
                 int row = 0;
                 
-                while(col < gp.maxScreenCol && row < gp.maxScreenRow){
+                while(col < gp.maxWorldCol && row < gp.maxWorldRow){
                     
                     String line = br.readLine();
                     
-                    while (col < gp.maxScreenCol){
+                    while (col < gp.maxWorldCol){
                         String numbers[] = line.split(" ");
                         
                         int num = Integer.parseInt(numbers[col]);
@@ -51,7 +72,7 @@ public final class TileManager {
                         col++;
                     }
                     
-                    if(col == gp.maxScreenCol){
+                    if(col == gp.maxWorldCol){
                         col = 0;
                         row++;
                     }
@@ -63,74 +84,36 @@ public final class TileManager {
     
     
         
-        /*
-        public int numeroImmagini(String path){
-    
-        // Metodo che dovrebbe contare quanti elementi ci sono in una directory, non riesco a cambiare da percorso assoluto a relativo
-        // Se funziona si può creare e poi popolare l'array di tiles con le giuste dimensioni
-        // Per ora si deve cambiare in base agli elementi nella directory ogni volta
-        // Nel caso di aggiornamenti di tiles grafici bisognerà farlo ogni volta
-    
-        List<String> fileNames = new ArrayList<>(); 
-        try {
-            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("D:\\Manuel\\Scuola\\Università\\2 Anno\\Interfacce grafiche\\TheFastestFood\\Gioco\\res\\tiles\\ristorante"));
-            for (Path paths : directoryStream) {
-                fileNames.add(paths.toString());
-            }
-        } catch (IOException ex) {
-        }
-        System.out.println("File Count:" + fileNames.size());
-        
-        return fileNames.size();
-        }
-        */
-        
-        
-    
-    public void getTileImage(){
-        
-        try {
-            
-            for(int i = 0; i < tile.length; i++ ){
-                String s;
-                if(i < 10){
-                    s = "/tiles/ristorante/sprite_0" + i + ".png";
-                }
-                else{
-                    s = "/tiles/ristorante/sprite_" + i + ".png";
-
-                }
-                tile[i] = new Tile();
-                tile[i].image = ImageIO.read(getClass().getResourceAsStream(s));
-            }
-            
-        } catch (IOException e) {
-        }
-    }
-    
-    
     public void draw(Graphics2D g2){
         
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
-        
-        while(col < gp.maxScreenCol && row < gp.maxScreenRow){
-            
-            int tileNum = mapTileNum[col][row];
-            
-            g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
-            col++;
-            x += gp.tileSize;
-            
-            if(col == gp.maxScreenCol){
-                col = 0;
-                x = 0;
-                row++;
-                y += gp.tileSize;
-            }
+        int worldCol = 0;
+        int worldRow = 0;
 
+        
+        while(worldCol < gp.maxScreenCol && worldRow < gp.maxScreenRow){
+            
+            int tileNum = mapTileNum[worldCol][worldRow];
+            
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize;
+            int screenX = worldX - gp.player.worldX + gp.player.screenX;
+            int screenY = worldY - gp.player.worldY + gp.player.screenY;
+
+            if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+                    worldX - gp.tileSize  < gp.player.worldX + gp.player.screenX &&
+                    worldY + gp.tileSize  > gp.player.worldY - gp.player.screenY && 
+                    worldY - gp.tileSize  < gp.player.worldY + gp.player.screenY ){ //Per migliorare le prestazioni, l'applicazione non deve caricare tutta la mappa, ma solo quella visibile
+            
+            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            
+            }
+            worldCol++;
+            
+            if(worldCol == gp.maxScreenCol){
+                worldCol = 0;
+                worldRow++;
+            }
+            
         } 
 
     }
