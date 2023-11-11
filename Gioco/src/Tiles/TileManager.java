@@ -22,14 +22,13 @@ public final class TileManager {
 
     public TileManager(GamePanel gp, String folderPath) {
         this.gp = gp;
-        
-        
         getTileImage(folderPath);
-        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // imposta le dimensione massime della mappa di gioco
         
-        loadMap("/maps/risto.txt");
+        loadMap("/maps/risto.txt"); // Gli viene passato il path del file .txt nella quale è salvata la mappa. NOTA: rendere più carino, es. parametro passato dal gamePanel
     }
     
+    //Passandogli il path della cartella dove sono presenti le immagini grafiche del gioco, popola l'array con esse e verifica se sono parti attraversabili dall'utente o no
     public void getTileImage(String folderPath){
         File path = new File(folderPath);
         File[] allFiles = path.listFiles();
@@ -52,6 +51,7 @@ public final class TileManager {
         
     }
     
+    //In base alla mappa .txt, lui popola una matrice che rappresentano le colonne e le righe di gioco, ne salva il valore grafico di esse 
     public void loadMap(String filePath){
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
@@ -82,8 +82,8 @@ public final class TileManager {
         }
     }
     
-    
-        
+    // Disegna la mappa in base al valore grafico della matrice, la ricercaall'interno dell'array, riga per colonna carica tutto
+    // In questa impostazione il gioco si incarica di disegnare solo quelle attorno al player e non tutta la mappa per non sovraccaricare nel caso di mappe immense.
     public void draw(Graphics2D g2){
         
         int worldCol = 0;
