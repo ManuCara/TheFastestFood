@@ -13,6 +13,7 @@ public class KeyHandler implements KeyListener{
     public void keyTyped(KeyEvent e) {
     }
 
+    //Metodo in ascolto se wasd viene premuto
     @Override
     public void keyPressed(KeyEvent e) {
 
@@ -34,6 +35,7 @@ public class KeyHandler implements KeyListener{
 
     }
 
+    //metodo in ascolto quando wasd viene rilasciato
     @Override
     public void keyReleased(KeyEvent e) {
 

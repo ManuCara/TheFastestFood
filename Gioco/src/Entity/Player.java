@@ -40,6 +40,8 @@ public final class Player extends Entity{
         direction = "down";
     }
     
+    
+    //metodo che carica le immagini del personaggio
     public void getPlayerImage(){
         
         try {
@@ -57,12 +59,9 @@ public final class Player extends Entity{
         } catch (IOException e) {
             System.err.println("Errore: " + e.getMessage());
         }
-        
-        
-        
     }
     
-    
+    //Aggiorna la direzione del personaggio
     public  void update(){
         
         if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
@@ -95,6 +94,8 @@ public final class Player extends Entity{
             }
         }
         
+        //Conta per quanto il personaggio si sta muovendo, se è piu' di uno incrementa lo spriteNum, fino a quando non raggiunge il numero massimo di sprites
+        //metodo molto statico
         spriteCounter++;
         if(spriteCounter > 12){
             if(spriteNum == 1){
@@ -110,6 +111,9 @@ public final class Player extends Entity{
              
     }
     
+    
+    //In base alla direzione sceglie lo spite adeguato e in base a quanto si sta spostando nella stessa direzione cambia spites
+    //metodo molto statico
     public void draw(Graphics2D g2){
         
         BufferedImage image = null;

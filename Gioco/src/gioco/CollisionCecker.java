@@ -14,11 +14,14 @@ public class CollisionCecker {
 
     public void checkTile(Entity entity){
         
+        
+        //Estremi dell'HitBox del Personaggio
         int entityLeftWorldX = entity.worldX + entity.solidArea.x;
         int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
         int entityTopWorldY = entity.worldY + entity.solidArea.y;
         int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
         
+        //Informazioni delle Colonne e righe dell'immaginni attorno al personaggio
         int entityLeftCol = entityLeftWorldX / gp.tileSize;
         int entityRightCol = entityRightWorldX / gp.tileSize;
         int entityTopRow = entityTopWorldY / gp.tileSize;

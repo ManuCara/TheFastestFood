@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
  */
 public class OBJ_Burger extends SuperObject{
 
+    //Assegna all'oggetto la sua imagini in questa classe e' burger
+    //Necessito di una classe che crea in maniera dinamica l'oggetto con l'immagini adeguata
     public OBJ_Burger() {
         
         name = "Burger";

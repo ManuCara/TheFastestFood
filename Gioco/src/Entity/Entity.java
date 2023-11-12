@@ -11,6 +11,7 @@ public class Entity {
     public int worldX, worldY;
     public int speed;
     
+    //Per rendere dinamiche l'uso delle immagini in base alla direzione necessito di una matrice, ogni riga rappresentera' una direzione e ogni colonna un'immagine della direzione
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction;
     
